@@ -5,7 +5,7 @@
     <head>
         <!-- Basic -->
         <meta charset="utf-8">
-        <title>Travelia  Travel Agency, Responsive - Hotel Online Booking</title>
+        <title>Flight reservation system</title>
         <meta name="keywords" content="HTML5 Template" />
         <meta name="description" content="World Cup - Responsive HTML5 Template soccer and sports">
         <meta name="author" content="iwthemes.com">  
@@ -66,42 +66,19 @@
                     <ul class="collapse"><!-- collapse class for collapse the drop down -->
                         <!-- website title - Logo class -->
                         <li class="title">
-                            <a href="index.html"><span>T</span>ravelia<span>.</span></a> 
+                            <a href="{{url('/')}}"><span>F</span>light website<span></span></a> 
                             <i class="fa fa-rocket"></i>
                         </li>
                         <!-- End website title - Logo class -->
 
-                        <li><a href="index.html">HOME</a>
+                        <li><a href="{{url('/')}}">HOME</a>
                             <div class="drop-down two-column hover-fade"><!-- drop down with two columns -->
-                                <ul><!-- column one -->
-                                    <li><a href="index.html">Home Version 1</a></li>
-                                    <li><a href="index-v2.html">Home Version 2</a></li>
-                                    <li><a href="index-v3.html">Home Version 3</a></li>
-                                    <li><a href="index-v4.html">Home Version 4</a></li>
-                                </ul>
                                 
-                                <ul><!-- column two -->
-                                    <li><a href="hotel-index.html">Home Hotels</a> </li>
-                                    <li> <a href="flight-index.html">Home Flights</a> </li>
-                                </ul>
                             </div>
                         </li>
                         
+                     
                         
-                        <li>
-                            <a href="contact.html">CONTACT</a>
-                        </li>
-
-                        <li class="social-bar"> <a href="#">FOLLOW US</a> 
-                            <ul class="drop-down hover-zoom">
-                                <li> <a href="#" target="_blank"><i class="fa fa-flickr"></i> </a> </li>
-                                <li> <a href="#" target="_blank"><i class="fa fa-instagram"></i> </a> </li>
-                                <li> <a href="#" target="_blank"><i class="fa fa-youtube"></i> </a> </li>
-                                <li> <a href="#" target="_blank"><i class="fa fa-facebook"></i> </a> </li>
-                                <li> <a href="#" target="_blank"><i class="fa fa-google-plus"></i> </a> </li>
-                                <li> <a href="#" target="_blank"><i class="fa fa-pinterest"></i> </a> </li>
-                            </ul>
-                        </li>
                         
                         <li class="login-form"> <i class="fa fa-user"></i><!-- login form -->
                             <ul class="drop-down hover-expand">
@@ -128,20 +105,7 @@
                             </ul>
                         </li>    
 
-                        <li class="search-bar"> <i class="fa fa-search"></i><!-- search bar -->
-                            <ul class="drop-down hover-expand">
-                                <li>
-                                    <form method="post" action="#">
-                                        <table>
-                                            <tr>
-                                                <td> <input type="search" required="required" name="serach_bar" placeholder="Type Keyword Here"> </td>
-                                                <td> <input type="submit" value="Search"> </td>
-                                            </tr>
-                                        </table>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>           
+                           
                     </ul>
                 </nav>
                 <!-- Main Nav -->
@@ -189,15 +153,14 @@
 
                     <form action="{{url('flightsearch')}}"  method="POST">
                     
-                             
-                            <input type="text" name="origin" id="search" required="required" placeholder="Origin" class="input-large" />
                             <ul class="list-group" id="result"></ul>
-                            <input type="text" name="destination" id="searchdestination" required="required" placeholder="Destination" class="input-large" />
-                            <ul class="list-group" id="result"></ul>
-                            <input type="date" name= "outbounddate" required="required" placeholder="Departing On" class="date-input">
+                            <input type="text" name="origin" id="search"  placeholder="Origin" class="input-large" />
+                            <input type="text" name="destination" id="searchdestination"  placeholder="Destination" class="input-large" />
+                            <ul class="list-group" id="result1"></ul>
+                            <input type="date" name= "outbounddate"  placeholder="Departing On" class="date-input">
                             <input type="text" name= "inbounddate"  placeholder="Returning On" class="date-input">
-                            <input type="text" name="adults" id="adultsearch" required="required" placeholder="Adults" class="input-small" />
-                            <input type="text" name="children" id="childrensearch" required="required" placeholder="Children" class="input-small" />
+                            <input type="text" name="adults" id="adultsearch"  placeholder="Adults" class="input-small" />
+                            <input type="text" name="children" id="childrensearch"  placeholder="Children" class="input-small" />
                             <input type="submit" value="Search">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <script src="js/autocomplete.js"></script>
@@ -420,108 +383,16 @@
                 <!-- End content info - Sponsors-->
                 <div class="content_info no-overflow">
                     <!-- Title -->
-                    <div class="container">
-                        <div class="row">
-                            <div class="titles no-margin-top">
-                                <h2>Recommended <span>Airlines</span></h2>
-                                <i class="fa fa-plane"></i>
-                                <hr class="tall">
-                            </div>                    
-                        </div>
-                    </div>
+                    
                     <!-- End Title-->
 
                     <!-- content-->
-                    <div class="container">
-                        <div class="row padding-bottom-mini">
-                            <div class="col-md-12">
-                                <ul id="sponsors" class="tooltip-hover">
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/1.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/2.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/3.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/4.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/5.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/6.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/7.png" alt="Image"></a></li>
-                                    <li data-toggle="tooltip" title data-original-title="Name Sponsor"> <a href="#"><img src="img/sponsors/8.png" alt="Image"></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                   
                     <!-- End content-->
-                </div>   
+                  
                 <!-- End content info - Sponsors--> 
 
-                <!-- End content info - Items Numbers -->
-                <div class="content_info">
-                    <div class="skin_base color-white border-top"> 
-                        <div class="container">
-                            <div class="row paddings">
-                                <div class="col-md-7 col-sm-8">
-                                    <!--Items Number-->
-                                    <div class="row">
-                                        <!--Item Number-->
-                                        <div class="col-md-6">
-                                            <div class="item-number-info">
-                                                <div class="large-number">
-                                                    1.
-                                                </div>
-                                                <div class="info-large-number">
-                                                    <h5>Up 30 % discount</h5>
-                                                    <p>For over 4 years offering the best plans at the best price with exclusive discounts.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end Item Number -->
-
-                                        <!--Item Number-->
-                                        <div class="col-md-6">
-                                            <div class="item-number-info">
-                                                <div class="large-number">
-                                                    2.
-                                                </div>
-                                                <div class="info-large-number">
-                                                    <h5>over 1 million Reviews</h5>
-                                                    <p>Browse and compare the views of users and safe acertarás.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end Item Number -->
-
-                                        <!--Item Number-->
-                                        <div class="col-md-6">
-                                            <div class="item-number-info">
-                                                <div class="large-number">
-                                                    3.
-                                                </div>
-                                                <div class="info-large-number">
-                                                    <h5>pays the price + low</h5>
-                                                    <p>All days Escape at the best price in offers for our products.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end Item Number -->
-
-                                        <!--Item Number-->
-                                        <div class="col-md-6">
-                                            <div class="item-number-info">
-                                                <div class="large-number">
-                                                    4.
-                                                </div>
-                                                <div class="info-large-number">
-                                                    <h5>Quiet Neighbourhood</h5>
-                                                    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--end Item Number -->
-                                    </div>
-                                    <!-- End Items Number-->
-
-                                    <a href="#" class="btn btn-primary">View Details</a>
-                                </div>
-                            </div><!--end of row-->
-                        </div>
+                
 
                         <div class="image-container col-md-5 col-sm-3 pull-right">
                             <div class="bg_parallax image_02_parallax"></div>
@@ -529,7 +400,7 @@
                     </div>
                 </div>
                 <!-- End content info - Items Numbers  -->
-            </div>
+            
             <!-- End Content Central -->
       
             <!-- footer-->
@@ -537,82 +408,10 @@
                 <div class="container">
                     <div class="row">         
                         <div class="col-md-7">
-                            <div class="row">                             
-                                <!-- Social Us-->
-                                <div class="col-md-3">
-                                    <h3>FOLLOW US</h3>
-                                    <ul class="social">
-                                        <li class="facebook"><span><i class="fa fa-facebook"></i></span><a href="#">Facebook</a></li>
-                                        <li class="twitter"><span><i class="fa fa-twitter"></i></span><a href="#">Twitter</a></li>
-                                        <li class="github"><span><i class="fa fa-github"></i></span><a href="#">Github</a></li>
-                                    </ul>
-                                </div>
-                                <!-- End Social Us-->
-                                
-                                <!-- Recent links-->
-                                <div class="col-md-5">
-                                    <h3>TRAVEL SPECIALISTS </h3>
-                                    <ul>
-                                        <li><i class="fa fa-check"></i> <a href="#">Golf Vacations</a></li>
-                                        <li><i class="fa fa-check"></i> <a href="#">Disney Parks Vacations</a></li>
-                                        <li><i class="fa fa-check"></i> <a href="#">Vacations As Advertised</a></li>                                    
-                                    </ul>
-                                </div>
-                                <!-- End Recent links-->
-
-                                <!-- Contact Us-->
-                                <div class="col-md-4">
-                                   <h3>CONTACT US</h3>
-                                   <ul class="contact_footer">
-                                        <li>
-                                            <i class="fa fa-envelope"></i> <a href="#">example@example.com</a>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-headphones"></i> <a href="#">55-5698-4589</a>
-                                         </li>
-                                        <li class="location">
-                                            <i class="fa fa-home"></i> <a href="#"> Av new stret - New York</a>
-                                        </li>                                   
-                                    </ul>
-                                </div>
-                                <!-- Contact Us-->
-                            </div>  
-
-                            <div class="divisor"></div>
+                            <
                             
-                            <div class="row">
-                                <!-- Newsletter-->
-                                <div class="col-md-12">
-                                    <h3>NEWSLETTER SIGN UP</h3>  
-                                    <form id="newsletterForm" action="php/mailchip/newsletter-subscribe.php">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-envelope"></i>
-                                                    </span>
-                                                    <input class="form-control" placeholder="Your Name" name="name" type="text" required="required">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-envelope"></i>
-                                                    </span>
-                                                    <input class="form-control" placeholder="Your  Email" name="email" type="email" required="required">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="submit" name="subscribe">SIGN UP</button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </form>   
-                                    <div id="result-newsletter"></div>
-                                </div>
-                                <!-- end Newsletter-->
-                            </div>                      
+                            
+                                               
                         </div>
 
                         <div class="col-md-offset-1 col-md-4">
@@ -628,17 +427,13 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-5">
-                                <p>&copy; 2015 Travelia . All Rights Reserved.  2010 - 2015</p>
+                                <p>&copy; 2019 Badr . All Rights Reserved.  2019</p>
                             </div>
                             <div class="col-md-7">
                                 <!-- Nav Footer-->
                                 <ul class="nav-footer">
-                                    <li><a href="index.html">HOME</a> </li>
-                                    <li><a href="hotel-index.html">HOTELS</a></li>
-                                    <li><a href="flight-index.html">FLIGHTS</a></li> 
-                                    <li><a href="car-index.html">CARS</a></li> 
-                                    <li><a href="cruice-index.html">CRUICES</a></li>                
-                                    <li><a href="contact.html">CONTACT</a></li>
+                                    <li><a href="/">HOME</a> </li>
+                                    <li><a href="/flightsearch">FLIGHTS</a></li>
                                 </ul>
                                 <!-- End Nav Footer-->
                             </div>
@@ -692,8 +487,8 @@
                 jQuery('.tp-banner').show().revolution({
                     dottedOverlay:"none",
                     delay:9000,
-                    startwidth:1170,
-                    startheight:925,
+                    startwidth:1000,
+                    startheight:800,
                     minHeight:500,
                     navigationType:"none",
                     navigationArrows:"solo",

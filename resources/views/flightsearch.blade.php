@@ -3,7 +3,7 @@
     <head>
         <!-- Basic -->
         <meta charset="utf-8">
-        <title>Travelia - Travel Agency, Responsive - Hotel Online Booking</title>
+        <title>Flight Reservation System</title>
         <meta name="keywords" content="HTML5 Template" />
         <meta name="description" content="World Cup - Responsive HTML5 Template soccer and sports">
         <meta name="author" content="iwthemes.com">  
@@ -46,81 +46,19 @@
 
 
 	// query db
-
-$origin = $_POST['origin'];
-$destination = $_POST['destination'];
-$outbounddate = $_POST['outbounddate'];
-$inbounddate = $_POST['inbounddate'];
-$adults = $_POST['adults'];
-$children = $_POST['children'];
-
-
-
-
-
-/*$data = json_decode($response);
-foreach($data->Quotes as $quotes){
-    echo $quotes->MinPrice;
-    echo $quotes->OutboundLeg->DepartureDate;}
-    
-    foreach($data->Places as $places){
-        echo $places->Name;
-    }  
-
-*/
-
-
-
+ 
+$origin = (isset($_POST['origin'])?$_POST['origin']: 'AGP');
+$destination = (isset($_POST['destination'])?$_POST['destination']:'LHR');
+$outbounddate = (isset($_POST['outbounddate'])?$_POST['outbounddate']:'2019-11-28 ');
+$inbounddate = (isset($_POST['inbounddate'])?$_POST['inbounddate']:'');
+$adults = (isset($_POST['adults'])?$_POST['adults']:'1');
+$children = (isset($_POST['children'])?$_POST['children']:'0');
 
 
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-	CURLOPT_URL => "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0",
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_ENCODING => "",
-	CURLOPT_MAXREDIRS => 10,
-	CURLOPT_TIMEOUT => 30,
-	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	CURLOPT_CUSTOMREQUEST => "POST",
-	CURLOPT_POSTFIELDS => "cabinClass=economy&children=$children&infants=0&country=GB&currency=GBP&locale=en-GB&originPlace=$origin&destinationPlace=$destination&outboundDate=$outbounddate&adults=$adults",
-	CURLOPT_HTTPHEADER => array(
-		"content-type: application/x-www-form-urlencoded",
-		"x-rapidapi-host: skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-		"x-rapidapi-key: 611189d0e6msh7ff09e834e88ad7p19b062jsn50828695a48f"
-	),
-));
-curl_setopt($curl, CURLOPT_HEADER, true);
-curl_setopt($curl, CURLOPT_POST, 1);
-
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-
-curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-
-$target = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-$response = curl_exec($curl);
-
-$header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-$header = substr($response, 189, $header_size);
-
-$err = curl_error($curl);
-
-$string = str_replace(' ', '', $header);
-$first = strtok($header , 'S');
-$str = preg_replace('/\s/','',$first );
-
-
-$sessionkey = $str;
-
-
-
-$ch = curl_init();
-
-curl_setopt_array($ch, array(
-	CURLOPT_URL => "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/$sessionkey?pageIndex=0&pageSize=10",
+	CURLOPT_URL => "https://tripadvisor1.p.rapidapi.com/flights/create-session?currency=GBP&ta=1&c=0&d1=MXP&o1=FCO&dd1=2020-09-29",
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_FOLLOWLOCATION => true,
 	CURLOPT_ENCODING => "",
@@ -129,15 +67,15 @@ curl_setopt_array($ch, array(
 	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 	CURLOPT_CUSTOMREQUEST => "GET",
 	CURLOPT_HTTPHEADER => array(
-		"x-rapidapi-host: skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
+		"x-rapidapi-host: tripadvisor1.p.rapidapi.com",
 		"x-rapidapi-key: 611189d0e6msh7ff09e834e88ad7p19b062jsn50828695a48f"
 	),
 ));
 
-$responsefinal = curl_exec($ch);
-$err = curl_error($ch);
+$response = curl_exec($curl);
+$err = curl_error($curl);
 
-curl_close($ch);
+curl_close($curl);
 
 if ($err) {
 	echo "cURL Error #:" . $err;
@@ -145,58 +83,91 @@ if ($err) {
 	
 }
 
+
+$array = json_decode($response, true);
+$sid = $array['search_params']['sid'];
+$sh = $array['summary']['sh'];
+
+
+$searchhash = $sh;
+$sessionkey = $sid;
+//echo $sessionkey;
+//echo $sessionkey;
+
+
+$curlsid = curl_init();
+
+curl_setopt_array($curlsid, array(
+	CURLOPT_URL => "https://tripadvisor1.p.rapidapi.com/flights/poll?currency=GBP&n=15&ns=NON_STOP%252CONE_STOP&so=PRICE&o=0&sid=$sessionkey",
+	CURLOPT_RETURNTRANSFER => true,
+	CURLOPT_FOLLOWLOCATION => true,
+	CURLOPT_ENCODING => "",
+	CURLOPT_MAXREDIRS => 10,
+	CURLOPT_TIMEOUT => 30,
+	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	CURLOPT_CUSTOMREQUEST => "GET",
+	CURLOPT_HTTPHEADER => array(
+		"x-rapidapi-host: tripadvisor1.p.rapidapi.com",
+		"x-rapidapi-key: 611189d0e6msh7ff09e834e88ad7p19b062jsn50828695a48f"
+	),
+));
+
+$responsefinal = curl_exec($curlsid);
+$err = curl_error($curlsid);
+
+curl_close($curlsid);
+
+if ($err) {
+	echo "cURL Error #:" . $err;
+} else {
+	//echo $responsefinal;
+}
 $data = json_decode($responsefinal, TRUE);
+$iid = $data['itineraries'][0]['l'][0]['id'];	
+
+$itineraryid = $iid;
+
+//echo $data['itineraries'][0]['l'][0]['pr']['dp'];
 
 
 
 
-//echo $data['Itineraries'][0]['PricingOptions'][0]['Price'];
 
-//foreach($data['Itineraries'] as $topic) {
-     //  echo $topic['PricingOptions'][0]['DeeplinkUrl'];
-//}
+
+
+
+$curlurl = curl_init();
+
+curl_setopt_array($curlurl, array(
+	CURLOPT_URL => "https://tripadvisor1.p.rapidapi.com/flights/get-booking-url?searchHash=$searchhash&Dest=MXP&id=$itineraryid&Orig=FCO&searchId=$sessionkey",
+	CURLOPT_RETURNTRANSFER => true,
+	CURLOPT_FOLLOWLOCATION => true,
+	CURLOPT_ENCODING => "",
+	CURLOPT_MAXREDIRS => 10,
+	CURLOPT_TIMEOUT => 30,
+	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	CURLOPT_CUSTOMREQUEST => "GET",
+	CURLOPT_HTTPHEADER => array(
+		"x-rapidapi-host: tripadvisor1.p.rapidapi.com",
+		"x-rapidapi-key: 611189d0e6msh7ff09e834e88ad7p19b062jsn50828695a48f"
+	),
+));
+
+$bookingurl = curl_exec($curlurl);
+$err = curl_error($curlurl);
+
+curl_close($curlurl);
+
+if ($err) {
+	echo "cURL Error #:" . $err;
+} else {
+	//echo $bookingurl;
+}
+$urljson = json_decode($bookingurl, TRUE);
+$finalurl = $urljson['partner_url'];
 
 ?>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+
    
    
    
@@ -210,65 +181,7 @@ $data = json_decode($responsefinal, TRUE);
         </div>
         <!--End Preloader-->
     
-        <!-- Theme-options -->
-        <div id="theme-options">
-            <div class="openclose"></div>
-            <div class="title">
-               <span>THEME OPTIONS</span>
-               <p>Choose a combination of predefined colors here. Here are some examples. You can create any additional number on your backend theme, also can choose the background you want and four differents layouts.</p>
-            </div>
-            <span>SKINS</span>
-            <ul id="colorchanger">      
-                <li><a class="colorbox red" href="?theme=red" title="Red Skin"></a></li>
-                <li><a class="colorbox blue" href="?theme=blue" title="Blue Skin"></a></li>                    
-                <li><a class="colorbox yellow" href="?theme=yellow" title="Yellow Skin"></a></li>
-                <li><a class="colorbox green" href="?theme=green" title="Green Skin"></a></li>
-                <li><a class="colorbox orange" href="?theme=orange" title="Orange Skin"></a></li>
-                <li><a class="colorbox purple" href="?theme=purple" title="Purple Skin"></a></li>
-                <li><a class="colorbox pink" href="?theme=pink" title="Pink Skin"></a></li>
-                <li><a class="colorbox cocoa" href="?theme=cocoa" title="Cocoa Skin"></a></li>
-            </ul>
-            <span>LAYOUT STYLE</span>
-            <ul class="layout-style">      
-                <li class="wide">Wide</li>
-                <li class="semiboxed active">Semiboxed</li> 
-                <li class="boxed">Boxed</li> 
-                <li class="boxed-margin">Boxed Margin</li>               
-            </ul>               
-            <div class="patterns">
-                <span>BACKGROUND PATTERNS</span>
-                <ul class="backgrounds">
-                    <li class="bgnone" title="None - Default"></li>
-                    <li class="bg1"></li>
-                    <li class="bg2"></li>
-                    <li class="bg3"></li>
-                    <li class="bg4 "></li>
-                    <li class="bg5"></li> 
-                    <li class="bg6"></li>
-                    <li class="bg7"></li>
-                    <li class="bg8"></li>
-                    <li class="bg9 "></li>
-                    <li class="bg10"></li> 
-                    <li class="bg11"></li> 
-                    <li class="bg12"></li> 
-                    <li class="bg13"></li> 
-                    <li class="bg14"></li> 
-                    <li class="bg15"></li> 
-                    <li class="bg16"></li> 
-                    <li class="bg17"></li> 
-                    <li class="bg18"></li> 
-                    <li class="bg19"></li> 
-                    <li class="bg20"></li> 
-                    <li class="bg21"></li> 
-                    <li class="bg22"></li> 
-                    <li class="bg23"></li> 
-                    <li class="bg24"></li> 
-                    <li class="bg25"></li> 
-                    <li class="bg26"></li>                   
-                </ul>  
-            </div>
-        </div>
-        <!-- End Theme-options -->       
+              
 
         <!-- layout-->
         <div id="layout">
@@ -283,156 +196,27 @@ $data = json_decode($responsefinal, TRUE);
                     <ul class="collapse"><!-- collapse class for collapse the drop down -->
                         <!-- website title - Logo class -->
                         <li class="title">
-                            <a href="index.html"><span>T</span>ravelia<span>.</span></a> 
+                            <a href="{{url('/')}}"><span>F</span>light Reservation<span>.</span></a> 
                             <i class="fa fa-rocket"></i>
                         </li>
                         <!-- End website title - Logo class -->
 
-                        <li><a href="index.html">HOME</a>
+                        <li><a href="{{url('/')}}">HOME</a>
                             <div class="drop-down two-column hover-fade"><!-- drop down with two columns -->
                                 <ul><!-- column one -->
-                                    <li><a href="index.html">Home Version 1</a></li>
-                                    <li><a href="index-v2.html">Home Version 2</a></li>
-                                    <li><a href="index-v3.html">Home Version 3</a></li>
-                                    <li><a href="index-v4.html">Home Version 4</a></li>
+                                    <li><a href="{{url('/')}}">Home Version 1</a></li>
+                                    <li><a href="{{url('/')}}">Home Version 2</a></li>
+                                    <li><a href="{{url('/')}}">Home Version 3</a></li>
+                                    <li><a href="{{url('/')}}">Home Version 4</a></li>
                                 </ul>
                                 
                                 <ul><!-- column two -->
-                                    <li><a href="hotel-index.html">Home Hotels</a> </li>
-                                    <li> <a href="flight-index.html">Home Flights</a> </li>
+                                    <li><a href="{{url('/')}}">Home Hotels</a> </li>
+                                    <li> <a href="{{url('/')}}">Home Flights</a> </li>
                                 </ul>
                             </div>
                         </li>
                         
-                        <li> <a href="hotel-index.html">HOTELS</a>
-                            <ul class="drop-down one-column hover-fade"><!-- first level drop down -->
-                                <li><a href="hotel-index.html">Home Hotels</a></li>
-                                <li><a href="hotel-list-view.html">List View</a></li>
-                                <li><a href="hotel-grid-view.html">Grid View</a></li>
-                                <li><a href="hotel-detailed.html">Detailed</a></li>
-                            </ul>
-                        </li>
-
-                        <li> <a href="template-shop.html">SHOP</a>
-                            <ul class="drop-down one-column hover-fade"><!-- first level drop down -->
-                                <li><a href="template-shop.html">Default Shop</a></li>
-                                <li><a href="template-shop-sidebar.html">Sidebar Shop</a> </li>
-                                <li><a href="template-shop.html#!/Beautiful-Venice/p/58713996/category=15487747">Single Shop</a></li>
-                            </ul>
-                        </li>
-
-                        <li> <a href="template-about-1.html">ABOUT US</a>
-                            <ul class="drop-down one-column hover-fade"><!-- first level drop down -->
-                                <li><a href="template-about-1.html">About Us 1</a> </li>
-                                <li><a href="template-about-2.html">About us 2</a> </li>
-                            </ul>
-                        </li>
-
-                        <li> <a href="template-service-1.html">SERVICES</a>
-                            <ul class="drop-down one-column hover-fade"><!-- first level drop down -->
-                                <li><a href="template-service-1.html">Services 1</a> </li>
-                                <li><a href="template-service-2.html">Services 2</a> </li>
-                            </ul>
-                        </li>
-
-                        <li> <a href="template-gallery-4.html">GALLERY</a>
-                            <ul class="drop-down one-column hover-fade"><!-- first level drop down -->
-                                <li><a href="template-gallery-4.html">Gallery 4 Column</a> </li>
-                                <li><a href="template-gallery-3.html">Gallery 3 Columns</a> </li>
-                                <li><a href="template-gallery-2.html">Gallery 2 Columns</a> </li>
-                            </ul>
-                        </li>
-
-                        <li> <a href="#">PACKAGES</a> 
-                            <div class="drop-down full-width hover-fade"><!-- full width drop down with 4 columns + images -->
-                                <ul><!-- column one -->
-                                    <li>
-                                        <h2><span>Punta</span> Cana</h2>
-                                        <a href="packages-index.html"><img src="img/gallery-2/1.jpg" alt="image 1"> </a> 
-                                        <p>Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales.</p>
-                                        <a href="packages-index.html" class="btn btn-primary">View Details</a>
-                                    </li>
-                                </ul>
-                                
-                                <ul><!-- column two -->
-                                    <li>
-                                        <h2><span>Santa</span> Marta</h2>
-                                        <a href="packages-index.html"><img src="img/gallery-2/2.jpg" alt="image 1"> </a> 
-                                        <p>Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales.</p>
-                                        <a href="packages-index.html" class="btn btn-primary">View Details</a>
-                                    </li>
-                                </ul>
-                                
-                                <ul><!-- column three -->
-                                    <li>
-                                        <h2><span>Isla</span> de San Andres</h2>
-                                        <a href="packages-index.html"><img src="img/gallery-2/3.jpg" alt="image 1"> </a> 
-                                        <p>Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales.</p>
-                                        <a href="packages-index.html" class="btn btn-primary">View Details</a>
-                                    </li>
-                                </ul>
-                                
-                                <ul><!-- column four -->
-                                    <li>
-                                        <h2><span>Cartagena</span> de Indias</h2>
-                                        <a href="packages-index.html"><img src="img/gallery-2/4.jpg" alt="image 1"> </a> 
-                                        <p>Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales.</p>
-                                        <a href="packages-index.html" class="btn btn-primary">View Details</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-
-                        <li> <a href="template-about-1.html">FEATURES</a> 
-                            <div class="drop-down full-width hover-fade"><!-- full width drop down with 4 columns -->
-                                <ul><!-- column One -->
-                                    <li><h2>Templates</h2></li>
-                                    <li><a href="template-about-1.html">About Us 1</a> </li>
-                                    <li><a href="template-about-2.html">About us 2</a> </li>
-                                    <li><a href="template-service-1.html">Services 1</a> </li>
-                                    <li><a href="template-service-2.html">Services 2</a> </li>
-                                    <li><a href="template-gallery-4.html">Gallery 4 Column</a> </li>
-                                    <li><a href="template-gallery-3.html">Gallery 3 Columns</a> </li>
-                                    <li><a href="template-gallery-2.html">Gallery 2 Columns</a> </li>
-                                    <li><a href="template-blog-right.html">Blog Right Sidebar</a> </li>
-                                    <li><a href="template-blog-left.html">Blog Left Sidebar</a> </li>
-                                </ul>
-                                
-                                <ul><!-- column Two -->
-                                    <li><h2>Templates</h2></li>
-                                    <li><a href="template-blog-full.html">Blog Full Width</a> </li>
-                                    <li><a href="template-blog-read.html">Blog Read</a> </li>
-                                    <li><a href="template-faq.html">Page Faq Questions</a> </li>
-                                    <li><a href="page-full-widht.html">Page Full Widht</a> </li>
-                                    <li><a href="page-left.html">Page Left Sidebar</a> </li>
-                                    <li><a href="page-right.html">Page Right Sidebar</a> </li>
-                                    <li><a href="page-404.html">Page 404</a> </li>
-                                    <li><a href="page-site-map.html">Page Site Map</a> </li>
-                                    <li><a href="princing-tables.html">Princing tables</a> </li>
-                                </ul>
-
-                                <ul><!-- column three -->
-                                    <li><h2>Features</h2></li>
-                                    <li><a href="feature-header-1.html">Header Version 1</a> </li>
-                                    <li><a href="feature-header-2.html">Header Version 2</a> </li>
-                                    <li><a href="feature-header-3.html">Header Version 3</a> </li>
-                                    <li><a href="feature-header-4.html">Header Version 4</a> </li>
-                                    <li><a href="feature-footer-1.html#footer">Footer Version 1</a> </li>
-                                    <li><a href="feature-footer-2.html#footer">Footer Version 2</a> </li>
-                                    <li><a href="feature-footer-3.html#footer">Footer Version 3</a> </li>
-                                    <li><a href="feature-footer-4.html#footer">Footer Version 4</a> </li>
-                                    <li><a href="feature-background-sections.html">Background sections</a> </li>
-                                </ul>
-
-                                <ul><!-- column four -->
-                                    <li><h2>Elements</h2></li>
-                                    <li><a href="feature-grid-system.html">Grid System</a> </li>
-                                    <li><a href="feature-typograpy.html">Typograpy</a> </li>
-                                    <li><a href="feature-icons.html">Icons</a> </li>
-                                    <li class="icon-big-nav"><i class="fa fa-rocket"></i></li><!-- Icon big nav -->
-                                </ul>
-                            </div>
-                        </li>
 
                         <li>
                             <a href="contact.html">CONTACT</a>
@@ -503,14 +287,14 @@ $data = json_decode($responsefinal, TRUE);
                 <!-- Content Parallax-->
                 <div class="opacy_bg_02">
                      <div class="container">
-                        <h1>Hotel List View</h1>
+                        <h1>Flight View</h1>
                         <div class="crumbs">
                             <ul>
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="{{url('/')}}">Home</a></li>
                                 <li>/</li>
-                                <li>Hotels</li>  
+                                <li>Flights</li>  
                                 <li>/</li>
-                                <li>Hotel List View</li>  
+                                <li>Flight List View</li>  
                             </ul>    
                         </div>
                     </div>  
@@ -540,33 +324,29 @@ $data = json_decode($responsefinal, TRUE);
 
                                         <!-- FILTER widget-->
                                         <div class="filter-widget">
-                                            <form action="#">
-                                                <input type="text" required="required" placeholder="Where do you want to go?" class="input-large">
-                                                <input type="text" required="required" placeholder="Check In" class="date-input">
-                                                <input type="text" required="required" placeholder="Check Out" class="date-input">
-                                                <div class="selector">
-                                                    <select class="guests-input">
-                                                        <option value="1">1 Guests</option>
-                                                        <option value="2">2 Guests</option>
-                                                        <option value="3">3 Guests</option>
-                                                        <option value="4">4 Guests</option>
-                                                        <option value="5">5+ Guests</option>
-                                                    </select>
-                                                    <span class="custom-select">Guests</span>
-                                                </div>
+                                                 <form action="{{url('flightsearch')}}"  method="POST">
+                                                 <input type="text" name="origin" id="search" required="required" placeholder="Origin" class="input-large" />
+                                                <ul class="list-group" id="result"></ul>
+                                                <input type="text" name="destination" id="searchdestination" required="required" placeholder="Destination" class="input-large" />
+                                                <ul class="list-group" id="result"></ul>
+                                                 <input type="date" name= "outbounddate" required="required" placeholder="Departing On" class="date-input">
+                                                <input type="text" name= "inbounddate"  placeholder="Returning On" class="date-input">
+                                                 <input type="text" name="adults" id="adultsearch" required="required" placeholder="Adults" class="input-small" />
+                                                 <input type="text" name="children" id="childrensearch" required="required" placeholder="Children" class="input-small" />
+                            
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                               
+                                                
                                                 <input type="submit" value="Search">
                                             </form>
                                         </div>
-                                        <!-- END FILTER widget-->
+                                         <!--END FILTER widget-->
                                     </aside>
                                     <!-- End Widget Filter -->
 
                                     <!-- Widget Filter Price Range-->
                                     <aside class="widget">
-                                        <h3 class="title-widget">Refine your results:</h3>
-                                        <h4>Price Range:</h4>
-                                        <b>$ 10</b> <b class="pull-right">$ 1000</b>
-                                        <input id="slider-range" type="text" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="5" data-slider-value="[0,800]"/> 
+                                        
                                     </aside>
                                     <!-- End Widget Filter Price Range-->
 
@@ -628,42 +408,7 @@ $data = json_decode($responsefinal, TRUE);
                                     <!-- Widget Filter Radio -->
                                     <aside class="widget">
                                         <h4>Acomodation type </h4>
-                                        <div class="checkbox">
-                                          <label>
-                                            <input type="checkbox" checked>
-                                            All
-                                          </label>
-                                        </div>
-                                        <div class="checkbox">
-                                          <label>
-                                            <input type="checkbox">
-                                            Hotel
-                                          </label>
-                                        </div>
-                                        <div class="checkbox">
-                                          <label>
-                                            <input type="checkbox">
-                                            Bed &amp; Breakfast
-                                          </label>
-                                        </div>
-                                        <div class="checkbox">
-                                          <label>
-                                            <input type="checkbox">
-                                            Apartment
-                                          </label>
-                                        </div>
-                                        <div class="checkbox">
-                                          <label>
-                                            <input type="checkbox">
-                                            Condo
-                                          </label>
-                                        </div>
-                                        <div class="checkbox">
-                                          <label>
-                                            <input type="checkbox">
-                                            All-Inclusive Resort 
-                                          </label>
-                                        </div>
+                                        
                                     </aside>
                                     <!-- End Widget Filter Radio -->
 
@@ -674,62 +419,7 @@ $data = json_decode($responsefinal, TRUE);
                                             <label>
                                               <input type="checkbox">High-speed Internet (41)
                                             </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Air conditioning (52)
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Swimming pool (55)
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Childcare (12)
-                                            </label>
-                                        </div>
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Fitness equipment (49)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Free breakfast (14)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Free parking (11)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Hair dryer (48)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Pets allowed (16)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Restaurant in hotel (47)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Room service (38)
-                                            </label>
-                                        </div>  
-                                        <div class="checkbox">
-                                            <label>
-                                              <input type="checkbox">Spa services on site (57) 
-                                            </label>
-                                        </div>  
+                                        
                                     </aside>
                                     <!-- End Widget Filter checkbox -->
                                 </div>
@@ -739,7 +429,7 @@ $data = json_decode($responsefinal, TRUE);
                             <div class="col-md-9">
                                 <!-- Title Results-->
                                 <div class="title-results">
-                                    <h3>41 Hotels starting at $56 Narrow results or <a href="#">view all</a></h3>
+                                    <h3>Quotes found <a href="#">view all</a></h3>
                                 </div>
                                 <!-- End Title Results-->
                                 
@@ -799,41 +489,51 @@ $data = json_decode($responsefinal, TRUE);
                                     </div>
                                 </div>
                                 <!-- sort-by-container-->
-
                                 <div class="row list-view">
-                                    <?php foreach($data['Itineraries'] as $topic) {?>
- 
+                                    
+                                <?php 
+                                        foreach($data['itineraries'] as $topic) {
+                                           ?>
+                                
+                                <?php foreach($data['providers'] as $logo) { 
+                                         ?>
+                                            
 
-    
 
-                                    <!-- Item Gallery List View-->
-                                    <div class="col-md-12">
+ 									<div class="col-md-12">
+                                     
+                                                
                                         <div class="img-hover">
-                                            <img src="img/hotel-img/2.jpg" alt="" class="img-responsive">
-                                            <div class="overlay"><a href="img/hotel-img/2.jpg" class="fancybox"><i class="fa fa-plus-circle"></i></a></div>
+                                         <img src="<?php echo $logo['l'];?>" alt="" class="img-responsive">
+                                         
+                                 <div class="overlay"> <a href= class="fancybox"><i class="fa fa-plus-circle"></i></a></div>
                                         </div>
 
                                         <div class="info-gallery">
                                             <h3>
-                                            <?php echo $topic['PricingOptions'][0]['Price'];?><br>
+                                            <?php echo $topic['l'][0]['pr']['dp'];?><br>
                                                
                                             </h3>
                                             <hr class="separator">
                                             
-                                            <p>Departing on </p>
+                                            <p>Departing on <?php echo $topic['f'][0]['l'][0]['dd'];?></p>
                                             <ul class="starts">
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star-half-empty"></i></a></li>
-                                            </ul>
-                                            <div class="content-btn"><a href=<?php echo $topic['PricingOptions'][0]['DeeplinkUrl'];?> class="btn btn-primary">View Details</a></div>
+                             				<li><a href="#"><i class="fa fa-star"></i></a></li>
+                             				 <li><a href="#"><i class="fa fa-star"></i></a></li>
+                             				<li><a href="#"><i class="fa fa-star"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
+                               				<li><a href="#"><i class="fa fa-star"></i></a></li>
+                    </ul>
+                    <div class="content-btn"><a href=<?php echo $finalurl;?> class="btn btn-primary">View Details</a></div>
                                             <div class="price"><span>£</span><b>From </b></div>
+    
                                         
-                                        </div>
-                                    </div>
-                                    <?php };?>
+                    </div>
+             </div>
+            <?php  }; ?>
+            <?php };  ?>
+                                            
+                                
                                     <!-- End Item Gallery List View-->
 
                                     <!-- pagination-->
@@ -866,11 +566,11 @@ $data = json_decode($responsefinal, TRUE);
                         <div class="col-md-5">
                             <div class="title-footer">
                                 <h2>Save on your plans!
-                                <br> <span>Select Travelia Theme And Receive</span>
+                                <br> <span>Select Us And Receive</span>
                                 <br> our discounts by e-mail.</h2>
                             </div>
 
-                            <p>You can choose your favorite destination and start planning your long-awaited vacation. We offer thousands of destinations and have a wide variety of hotels so that you can host and enjoy your stay without problems. Book now your trip travelia.com.</p>
+                            <p>You can choose your favorite destination and start planning your long-awaited vacation. We offer thousands of destinations and have a wide variety of hotels so that you can host and enjoy your stay without problems. Book now your trip flight2.test</p>
                         </div>
                         <!-- End Title Footer-->
 
@@ -903,13 +603,13 @@ $data = json_decode($responsefinal, TRUE);
                                    <h3>CONTACT US</h3>
                                    <ul class="contact_footer">
                                         <li>
-                                            <i class="fa fa-envelope"></i> <a href="#">example@example.com</a>
+                                            <i class="fa fa-envelope"></i> <a href="#">badr.bakkali1998@gmail.com</a>
                                         </li>
                                         <li>
                                             <i class="fa fa-headphones"></i> <a href="#">55-5698-4589</a>
                                          </li>
                                         <li class="location">
-                                            <i class="fa fa-home"></i> <a href="#"> Av new stret - New York</a>
+                                            <i class="fa fa-home"></i> <a href="#"> 17 Stornoway, Hemel Hempstead</a>
                                         </li>                                   
                                     </ul>
                                 </div>
@@ -960,17 +660,13 @@ $data = json_decode($responsefinal, TRUE);
                     <div class="container">
                         <div class="row">
                             <div class="col-md-5">
-                                <p>&copy; 2015 Travelia . All Rights Reserved.  2010 - 2015</p>
+                                <p>&copy; 2020 . All Rights Reserved.  2020</p>
                             </div>
                             <div class="col-md-7">
                                 <!-- Nav Footer-->
                                 <ul class="nav-footer">
-                                    <li><a href="index.html">HOME</a> </li>
-                                    <li><a href="hotel-index.html">HOTELS</a></li>
-                                    <li><a href="flight-index.html">FLIGHTS</a></li> 
-                                    <li><a href="car-index.html">CARS</a></li> 
-                                    <li><a href="cruice-index.html">CRUICES</a></li>                
-                                    <li><a href="contact.html">CONTACT</a></li>
+                                    <li><a href="{{url('/')}}">HOME</a> </li>
+                                   
                                 </ul>
                                 <!-- End Nav Footer-->
                             </div>

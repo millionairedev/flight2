@@ -20,3 +20,4 @@ Route::get('/user', 'UserController@index');
 
 
 Route::post('flightsearch', 'HomeController@flightmethod');
+Route::get('flightsearch', 'HomeController@flightmethod');

@@ -48,12 +48,13 @@ $(document).ready(function(){
       $.each(data, function(key, value){
        if (value.name.search(expression) != -1 )
        {
-        $('#result').append('<li class="list-group-item link-class"> '+value.iata+' | <span class="text-muted">'+value.name+'</span></li>');
+        $('#result').append('<li class="list-group-item"> '+value.code+' | <span class="text-muted">'+value.name+'</span></li>');
        }
       });   
      });
     });
-    
+  
+  
     $('#result').on('click', 'li', function() {
      var click_text = $(this).text().split('|');
      $('#search').val($.trim(click_text[0]));
@@ -64,7 +65,7 @@ $(document).ready(function(){
    $(document).ready(function(){
     $.ajaxSetup({ cache: false });
     $('#searchdestination').keyup(function(){
-     $('#result').html('');
+     $('#result1').html('');
      $('#state').val('');
      var searchField = $('#searchdestination').val();
      var expression = new RegExp(searchField, "i");
@@ -72,15 +73,15 @@ $(document).ready(function(){
       $.each(data, function(key, value){
        if (value.name.search(expression) != -1 )
        {
-        $('#result').append('<li class="list-group-item link-class"> '+value.iata+' | <span class="text-muted">'+value.name+'</span></li>');
+        $('#result1').append('<li class="list-group-item"> '+value.code+' | <span class="text-muted">'+value.name+'</span></li>');
        }
       });   
      });
     });
     
-    $('#result').on('click', 'li', function() {
+    $('#result1').on('click', 'li', function() {
      var click_text = $(this).text().split('|');
      $('#searchdestination').val($.trim(click_text[0]));
-     $("#result").html('');s
+     $("#result1").html('');s
     });
    });
